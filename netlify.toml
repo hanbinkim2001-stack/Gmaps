@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/naver-local/*"
+  to = "/.netlify/functions/naver-local/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/ncp-maps/*"
+  to = "/.netlify/functions/ncp-maps/:splat"
+  status = 200
+
