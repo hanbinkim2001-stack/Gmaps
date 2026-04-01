@@ -4,10 +4,11 @@ export const handler = async (event) => {
     const upstreamPath = event.path
       .replace(/^\/\.netlify\/functions\/naver-local\/?/, "")
       .replace(/^\/api\/naver-local\/?/, "");
+    const qs =
+      event.rawQueryString ||
+      new URLSearchParams(event.queryStringParameters || {}).toString();
     const upstreamUrl =
-      "https://openapi.naver.com/" +
-      upstreamPath +
-      (event.rawQueryString ? `?${event.rawQueryString}` : "");
+      "https://openapi.naver.com/" + upstreamPath + (qs ? `?${qs}` : "");
 
     const clientId = process.env.NAVER_SEARCH_CLIENT_ID || "";
     const clientSecret = process.env.NAVER_SEARCH_CLIENT_SECRET || "";

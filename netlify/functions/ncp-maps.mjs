@@ -5,7 +5,10 @@ export const handler = async (event) => {
       .replace(/^\/\.netlify\/functions\/ncp-maps\/?/, "")
       .replace(/^\/api\/ncp-maps\/?/, "");
     const normalizedPath = upstreamPath.replace(/^\/+/, "");
-    const qs = event.rawQueryString ? `?${event.rawQueryString}` : "";
+    const qsRaw =
+      event.rawQueryString ||
+      new URLSearchParams(event.queryStringParameters || {}).toString();
+    const qs = qsRaw ? `?${qsRaw}` : "";
     const urlCandidates = [
       // 신규 엔드포인트 (문서 기준)
       `https://maps.apigw.ntruss.com/${normalizedPath}${qs}`,
