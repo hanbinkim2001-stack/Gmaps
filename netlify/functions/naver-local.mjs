@@ -1,9 +1,9 @@
 export const handler = async (event) => {
   try {
-    const upstreamPath = event.path.replace(
-      /^\/\.netlify\/functions\/naver-local\/?/,
-      ""
-    );
+    // event.path가 "/.netlify/functions/..." 또는 원래 요청 경로("/api/naver-local/...")로 올 수 있음
+    const upstreamPath = event.path
+      .replace(/^\/\.netlify\/functions\/naver-local\/?/, "")
+      .replace(/^\/api\/naver-local\/?/, "");
     const upstreamUrl =
       "https://openapi.naver.com/" +
       upstreamPath +

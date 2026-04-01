@@ -1,9 +1,9 @@
 export const handler = async (event) => {
   try {
-    const upstreamPath = event.path.replace(
-      /^\/\.netlify\/functions\/ncp-maps\/?/,
-      ""
-    );
+    // Netlify는 event.path를 "/.netlify/functions/..." 또는 원래 요청 경로("/api/ncp-maps/...")로 줄 수 있어 둘 다 제거
+    const upstreamPath = event.path
+      .replace(/^\/\.netlify\/functions\/ncp-maps\/?/, "")
+      .replace(/^\/api\/ncp-maps\/?/, "");
     const normalizedPath = upstreamPath.replace(/^\/+/, "");
     const qs = event.rawQueryString ? `?${event.rawQueryString}` : "";
     const urlCandidates = [
