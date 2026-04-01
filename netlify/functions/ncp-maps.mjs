@@ -23,6 +23,7 @@ export const handler = async (event) => {
     };
 
     let lastRes = null;
+    let lastNotFoundBody = "";
     for (const url of urlCandidates) {
       // eslint-disable-next-line no-await-in-loop
       const res = await fetch(url, {
@@ -36,11 +37,31 @@ export const handler = async (event) => {
 
       // eslint-disable-next-line no-await-in-loop
       const body = await res.clone().text();
+      lastNotFoundBody = body;
       if (!body.includes("Not Found Exception")) break;
       // 다음 후보로 계속
     }
 
     const body = await lastRes.text();
+    if (
+      lastRes.status === 404 &&
+      (body.includes("Not Found Exception") ||
+        (lastNotFoundBody && lastNotFoundBody.includes("Not Found Exception")))
+    ) {
+      return {
+        statusCode: 502,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+        },
+        body: JSON.stringify({
+          error: "NCP endpoint not found",
+          tried: urlCandidates,
+          hint: "지오코딩 상품/엔드포인트가 계정에 따라 다를 수 있습니다. tried URL로 직접 호출해 확인하세요.",
+          upstreamBody: body,
+        }),
+      };
+    }
     return {
       statusCode: lastRes.status,
       headers: {
